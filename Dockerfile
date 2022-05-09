@@ -1,10 +1,9 @@
 FROM php:8.1.5-fpm-alpine
 
-LABEL org.label-schema.schema-version="1.0" \
-      org.label-schema.description="PHP for dockerized Wordpress installation." \
-      org.label-schema.name="wordpress-php" \
-      org.label-schema.vcs-url="https://github.com/kugland/docker-wordpress" \
-      org.opencontainers.image.source="https://github.com/kugland/docker-wordpress"
+LABEL org.opencontainers.image.title="wordpress-php" \
+      org.opencontainers.image.description="php-fpm docker image for my WordPress stack" \
+      org.opencontainers.image.source="https://github.com/kugland/docker-wordpress-php" \
+      org.opencontainers.image.authors="André Kugland <kugland@gmail.com>"
 
 ENV PHP_EXTENSIONS="exif gd imagick mcrypt mysqli opcache zip"
 
