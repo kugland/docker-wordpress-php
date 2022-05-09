@@ -12,7 +12,7 @@ ENV PHP_EXTENSIONS="exif gd imagick mcrypt mysqli opcache zip"
 RUN { \
   set -eux ; \
   curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /usr/local/bin/install-php-extensions ; \
-  /bin/sh /usr/local/bin/install-php-extensions $PHP_EXTENSIONS ; \
+  IPE_GD_WITHOUTAVIF=1 /bin/sh /usr/local/bin/install-php-extensions $PHP_EXTENSIONS ; \
   rm /usr/local/bin/install-php-extensions ; \
   rm -rf /usr/src/* /usr/lib/*.a /usr/include/* ; \
 }
