@@ -11,11 +11,10 @@ ENV PHP_EXTENSIONS="exif gd imagick mcrypt mysqli opcache zip"
 # Install PHP extensions required by Wordpress.
 RUN { \
   set -eux ; \
-  curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /usr/local/bin/install-php-extensions && \
-  chmod +x /usr/local/bin/install-php-extensions && \
-  sync && \
-  /usr/local/bin/install-php-extensions $PHP_EXTENSIONS && \
+  curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /usr/local/bin/install-php-extensions ; \
+  /bin/sh /usr/local/bin/install-php-extensions $PHP_EXTENSIONS ; \
   rm /usr/local/bin/install-php-extensions ; \
+  rm -rf /usr/src/* /usr/lib/*.a /usr/include/* ; \
 }
 
 # Add local overrides for the PHP configuration.
@@ -53,9 +52,6 @@ RUN { \
 # Add entrypoint script.
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-# Remove unneeded files.
-RUN rm -rf /usr/src/* /usr/lib/*.a
 
 VOLUME [ "/var/log/php-fpm" ]
 ENTRYPOINT [ "/entrypoint.sh" ]
