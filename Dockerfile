@@ -22,12 +22,6 @@ COPY ./local.ini /usr/local/etc/php/conf.d/99-local.ini
 # Add initialization script for PHP (run on every request).
 COPY ./init.php /var/www/init.php
 
-# Set document root to /var/www.
-VOLUME /var/www/html
-
-# Change ownership of document root to www-data:www-data.
-RUN chown www-data:www-data /var/www/html
-
 RUN { \
   set -eux ; \
   sed -Ei /usr/local/etc/php-fpm.d/docker.conf \
@@ -48,10 +42,15 @@ RUN { \
   chmod 755 /usr/local/bin/wp ; \
 }
 
+
+# Setup volumes
+VOLUME [ "/var/www/html", "/var/log/php-fpm", "/var/cache/php-opcache" ]
+RUN chown www-data:www-data /var/www/html /var/log/php-fpm /var/cache/php-opcache
+
 # Add entrypoint script.
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-VOLUME [ "/var/log/php-fpm" ]
 ENTRYPOINT [ "/entrypoint.sh" ]
+
+# Default command
 CMD [ "php-fpm" ]
