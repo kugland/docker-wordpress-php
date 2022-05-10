@@ -44,10 +44,7 @@ RUN { \
 
 
 # Setup volumes
-RUN { \
-  mkdir /var/log/php-fpm /var/cache/php-opcache ; \
-  chown www-data:www-data /var/www/html /var/log/php-fpm /var/cache/php-opcache ; \
-}
+RUN mkdir /var/log/php-fpm /var/cache/php-opcache
 VOLUME [ "/var/www/html", "/var/log/php-fpm", "/var/cache/php-opcache" ]
 
 # Add entrypoint script.

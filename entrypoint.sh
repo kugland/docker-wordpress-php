@@ -8,14 +8,12 @@ if [ -f /var/www/html/wp-config.php ]; then
   rm /var/www/html/wp-config.php
 fi
 
-chown -R www-data:www-data /var/www/html
-
 # Create empty access.log and error.log files if they don't exist
-for f in access.log error.log; do
-  test -e /var/log/php-fpm/$f || touch /var/log/php-fpm/$f
-done
-# Change owner to www-data
-chown -R www-data:www-data /var/log/php-fpm/*.log
+test -e /var/log/php-fpm/access.log || touch /var/log/php-fpm/access.log
+test -e /var/log/php-fpm/error.log  || touch /var/log/php-fpm/error.log
+
+# Change owner and group of all writable files to www-data:www-data
+chown -R www-data:www-data /var/www/html/ /var/log/php-fpm/ /var/cache/php-opcache/
 
 echo '<?php' > /var/www/wp-config.php
 echo "define( 'DB_HOST', 'mariadb' );" >> /var/www/wp-config.php
