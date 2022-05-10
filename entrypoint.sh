@@ -18,7 +18,6 @@ fi
 [ "$DB_PASSWORD"      == "" ] && echo "[!!!] Please set DB_PASSWORD in your .env file." && stop=1
 [ "$DB_NAME"          == "" ] && echo "[!!!] Please set DB_DATABASE in your .env file." && stop=1
 [ "$DB_CHARSET"       == "" ] && echo "[!!!] Please set DB_CHARSET in your .env file." && stop=1
-[ "$DB_COLLATE"       == "" ] && echo "[!!!] Please set DB_COLLATE in your .env file." && stop=1
 [ "$DB_TABLE_PREFIX"  == "" ] && echo "[!!!] Please set DB_TABLE_PREFIX in your .env file." && stop=1
 [ "$AUTH_KEY"         == "" ] && echo "[!!!] Please set AUTH_KEY in your .env file." && stop=1
 [ "$SECURE_AUTH_KEY"  == "" ] && echo "[!!!] Please set SECURE_AUTH_KEY in your .env file." && stop=1
