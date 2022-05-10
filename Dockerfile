@@ -22,12 +22,10 @@ COPY ./local.ini /usr/local/etc/php/conf.d/99-local.ini
 # Add initialization script for PHP (run on every request).
 COPY ./init.php /var/www/init.php
 
-RUN { \
-  set -eux ; \
-  sed -Ei /usr/local/etc/php-fpm.d/docker.conf \
+# Write logs to files, not to stdout.
+RUN sed -Ei /usr/local/etc/php-fpm.d/docker.conf \
     -e '/^access\.log = /s,/proc/self/fd/2,/var/log/php-fpm/access.log,g' \
-    -e '/^error_log = /s,/proc/self/fd/2,/var/log/php-fpm/error.log,g'; \
-}
+    -e '/^error_log = /s,/proc/self/fd/2,/var/log/php-fpm/error.log,g'
 
 # Add wp-cli.
 RUN { \
@@ -41,7 +39,6 @@ RUN { \
   echo -e '#!/bin/sh\nsudo -u www-data -i -- php /usr/local/bin/wp-cli.phar --path=/var/www/html "$@"' >/usr/local/bin/wp; \
   chmod 755 /usr/local/bin/wp ; \
 }
-
 
 # Setup volumes
 RUN mkdir /var/log/php-fpm /var/cache/php-opcache
