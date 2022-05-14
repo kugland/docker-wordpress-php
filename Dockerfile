@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.title="wordpress-php" \
       org.opencontainers.image.source="https://github.com/kugland/docker-wordpress-php" \
       org.opencontainers.image.authors="André Kugland <kugland@gmail.com>"
 
-ENV PHP_EXTENSIONS="exif gd imagick mcrypt mysqli opcache zip"
+ENV PHP_EXTENSIONS="exif gd imagick intl mcrypt mysqli opcache zip"
 
 # Install PHP extensions required by Wordpress.
 RUN { \
