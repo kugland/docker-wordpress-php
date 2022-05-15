@@ -3,10 +3,7 @@
 set -e
 
 stop=0
-
 # Check required environment variables.
-[ "$DAEMON_UID"       == "" ] && echo "[!!!] Please set PHP_UID in your .env file." && stop=1
-[ "$DAEMON_GID"       == "" ] && echo "[!!!] Please set PHP_GID in your .env file." && stop=1
 [ "$WP_ENV"           == "" ] && echo "[!!!] Please set WP_ENV in your .env file." && stop=1 || \
 if [ "$WP_ENV" != development ] && [ "$WP_ENV" != production ]; then
   echo "[!!!] Invalid value for WP_ENV. Please set WP_ENV to either 'development' or 'production' in your .env file."
@@ -37,7 +34,7 @@ for d in wp-content wp-content/plugins wp-content/themes wp-content/uploads; do
 done
 
 # Stop if anything is wrong.
-[ "$stop" == '1' ] && exit 1; unset stop
+[ "$stop" == '1' ] && exit 1 || unset stop
 
 # Set the UID and GID for the daemon
 sed -Ei -e '/^www-data:/{s,:82:82:,:'${DAEMON_UID:-1000}:${DAEMON_GID:-1000}':,}' /etc/passwd*
@@ -61,22 +58,10 @@ echo '<?php' >/var/www/wp-config.php
 echo "define( 'DB_HOST', 'mariadb' );" >>/var/www/wp-config.php
 echo "define( 'DISALLOW_FILE_EDIT', true );" >>/var/www/wp-config.php
 vars="
-  WP_ENV
-  WP_HOME
-  WP_SITEURL
-  DB_USER
-  DB_PASSWORD
-  DB_NAME
-  DB_CHARSET
-  DB_COLLATE
-  AUTH_KEY
-  SECURE_AUTH_KEY
-  LOGGED_IN_KEY
-  NONCE_KEY
-  AUTH_SALT
-  SECURE_AUTH_SALT
-  LOGGED_IN_SALT
-  NONCE_SALT
+  WP_ENV            WP_HOME           WP_SITEURL        DB_USER
+  DB_PASSWORD       DB_NAME           DB_CHARSET        DB_COLLATE
+  AUTH_KEY          SECURE_AUTH_KEY   LOGGED_IN_KEY     NONCE_KEY
+  AUTH_SALT         SECURE_AUTH_SALT  LOGGED_IN_SALT    NONCE_SALT
 "
 for var in $vars; do
   echo "define( '$var', '$(eval echo \$$var)' );" >>/var/www/wp-config.php
@@ -94,14 +79,7 @@ unset DB_TABLE_PREFIX
 # Silence is golden.
 for d in wp-content wp-content/plugins wp-content/themes wp-content/uploads; do
   d="/var/www/html/$d"
-  if [ -f "$d/index.php" ]; then
-    if [ "$(sha256sum "$d/index.php" | cut -d' ' -f1)" == "bd48c24ce4500e60d2524571756787283f0d3fbfa50b116331309c09773f0cd1" ]; then
-      continue
-    else
-      echo "[!!!] '$d/index.php' has changed!"
-    fi
-  fi
-  echo -e '<?php\n// Silence is golden.' >"$d/index.php"
+  echo -e '<?php\n// Silence is golden.' >"/var/www/html/$d/index.php"
 done
 
 if [ "${1#-}" != "$1" ]; then set -- php-fpm "$@"; fi
@@ -109,13 +87,16 @@ if [ "${1#-}" != "$1" ]; then set -- php-fpm "$@"; fi
 if [ "$1" = 'php-fpm' ]; then
   wp core verify-checksums || {
     echo "[!!!] Checksums of Wordpress core files are not valid. Please run 'wp core verify-checksums' manually."
-    exit 1
+    exit 1 # Any change in the WordPress core files is a fatal error.
   }
   while ! nc -z mariadb 3306; do
     sleep 0.2
   done
   wp plugin verify-checksums --all || {
     echo "[!!!] Checksums of Wordpress plugins are not valid. Please run 'wp plugin verify-checksums --all' manually."
+    # Changes in the WordPress plugins are just warnings, cecause plugins
+    # that are not obtained from the WordPress.org repository cannot be
+    # verified.
   }
 fi
 exec "$@"
