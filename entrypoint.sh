@@ -82,8 +82,18 @@ for d in wp-content wp-content/plugins wp-content/themes wp-content/uploads; do
   echo -e '<?php\n// Silence is golden.' >"/var/www/html/$d/index.php"
 done
 
+# Set snuffleupagus secret key.
+SNUFFLEUPAGUS_SECRET_KEY=$(base64 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 64)
+sed -i -E \
+  -e 's,# (sp.global.secret_key)\(.*\);,\1("'"$SNUFFLEUPAGUS_SECRET_KEY"'"),g' \
+  -e 's,"PHPSESSID","WP_PHPSESSID",g' \
+  /usr/local/etc/php/conf.d/snuffleupagus.rules
+unset SNUFFLEUPAGUS_SECRET_KEY
+
+# Run php-fpm if no command is passed.
 if [ "${1#-}" != "$1" ]; then set -- php-fpm "$@"; fi
 
+# If the command is php-fpm, then do a few integritiy checks.
 if [ "$1" = 'php-fpm' ]; then
   wp core verify-checksums || {
     echo "[!!!] Checksums of Wordpress core files are not valid. Please run 'wp core verify-checksums' manually."
