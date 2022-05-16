@@ -8,7 +8,7 @@ LABEL org.opencontainers.image.title="wordpress-php" \
 ENV PHP_EXTENSIONS="exif gd imagick intl mcrypt mysqli opcache zip"
 
 # renovate: datasource=github-tags depName=mlocati/docker-php-extension-installer
-ENV DOCKER_PHP_EXTENSION_INSTALLER_VERSION=1.5.14
+ENV DOCKER_PHP_EXTENSION_INSTALLER_VERSION=1.5.15
 
 # Install PHP extensions required by Wordpress.
 RUN { \
