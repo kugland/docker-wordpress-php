@@ -78,7 +78,6 @@ unset DB_TABLE_PREFIX
 
 # Silence is golden.
 for d in wp-content wp-content/plugins wp-content/themes wp-content/uploads; do
-  d="/var/www/html/$d"
   echo -e '<?php\n// Silence is golden.' >"/var/www/html/$d/index.php"
 done
 
