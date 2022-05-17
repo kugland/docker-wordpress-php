@@ -2,7 +2,6 @@
 
 define( 'WP_MEMORY_LIMIT', '256M' );
 define( 'WP_DEBUG_DISPLAY', false );
-@ini_set( 'display_errors', 0 );
 
 define( 'WP_CACHE', true );
 
