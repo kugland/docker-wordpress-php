@@ -33,7 +33,7 @@ RUN { \
   echo 'export WP_CLI_CACHE_DIR=/tmp/wp-cli-cache' >>/home/www-data/.profile; \
   echo -e '#!/bin/sh\nsudo -u www-data -i -- php /usr/local/bin/wp-cli.phar --path=/var/www/html "$@"' >/usr/local/bin/wp; \
   chmod 755 /usr/local/bin/wp ; \
-  mv /usr/local/etc/php/conf.d/snuffleupagus.rules /usr/local/etc/php-fpm.d/ ; \
+  mv /usr/local/etc/php/conf.d/docker-php-ext-snuffleupagus.ini /usr/local/etc/php-fpm.d/ ; \
 }
 
 # Add local overrides for the PHP configuration.
