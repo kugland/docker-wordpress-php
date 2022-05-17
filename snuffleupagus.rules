@@ -77,7 +77,7 @@ sp.disable_function.function("proc_open").param("command").value_r("[$|;&`\\n\\(
 # Prevent runtime modification of interesting things
 sp.disable_function.function("ini_set").param("option").value("assert.active").drop();
 sp.disable_function.function("ini_set").param("option").value("zend.assertions").drop();
-sp.disable_function.function("ini_set").param("option").value("memory_limit").drop();
+#sp.disable_function.function("ini_set").param("option").value("memory_limit").drop();
 sp.disable_function.function("ini_set").param("option").value("include_path").drop();
 sp.disable_function.function("ini_set").param("option").value("open_basedir").drop();
 
@@ -130,7 +130,7 @@ sp.ini_protection.enable();
 sp.ini_protection.simulation();
 
 ## FOR PRODUCTION SYSTEMS: disable error messages and version numbers
-sp.ini.key("display_errors").set("0").ro();
+#sp.ini.key("display_errors").set("0").ro();
 sp.ini.key("display_startup_errors").set("0").ro();
 sp.ini.key("expose_php").set("0").ro();
 ## FOR DEVELOPMENT/TESTING: allow enabling error messages and version numbers
@@ -139,9 +139,9 @@ sp.ini.key("expose_php").set("0").ro();
 #sp.ini.key("expose_php").rw();
 
 ## error logging options should not be set during runtime -> read-only.
-sp.ini.key("error_log").ro();
+#sp.ini.key("error_log").ro();
 sp.ini.key("error_reporting").ro();
-sp.ini.key("log_errors").ro();
+#sp.ini.key("log_errors").ro();
 @condition PHP_VERSION_ID < 80000;
 sp.ini.key("log_errors_max_len").set("2048").ro();
 @end_condition;
@@ -200,12 +200,12 @@ sp.ini.key("docref_root").ro();
 sp.ini.key("html_errors").set("0").ro();
 
 ## restrict limit settings to prevent Denial-of-Service
-sp.ini.key("max_execution_time").min("30").max("600").rw();
+#sp.ini.key("max_execution_time").min("30").max("600").rw();
 sp.ini.key("max_file_uploads").min("0").max("25").rw();
 sp.ini.key("max_input_nesting_level").min("16").max("64").rw();
-sp.ini.key("max_input_time").set("-1").ro();
-sp.ini.key("max_input_vars").min("0").max("1024").rw();
-sp.ini.key("memory_limit").min("4M").max("256M").rw();
+#sp.ini.key("max_input_time").set("-1").ro();
+#sp.ini.key("max_input_vars").min("0").max("1024").rw();
+sp.ini.key("memory_limit").min("4M").max("1024M").rw();
 sp.ini.key("post_max_size").max("256M").rw();
 sp.ini.key("upload_max_filesize").max("256M").rw();
 sp.ini.key("precision").max("14").rw();
