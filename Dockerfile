@@ -38,6 +38,9 @@ RUN { \
 # Add local overrides for the PHP configuration.
 COPY ./local.ini /usr/local/etc/php/conf.d/99-local.ini
 
+# Add Snuffleupagus rules.
+COPY ./snuffleupagus.rules /usr/local/etc/php/conf.d/snuffleupagus.rules
+
 # Add initialization script for PHP (run on every request).
 COPY ./init.php /var/www/init.php
 

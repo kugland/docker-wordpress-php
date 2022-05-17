@@ -85,7 +85,6 @@ done
 SNUFFLEUPAGUS_SECRET_KEY=$(base64 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 64)
 sed -i -E \
   -e 's,# (sp.global.secret_key)\(.*\);,\1("'"$SNUFFLEUPAGUS_SECRET_KEY"'"),g' \
-  -e 's,"PHPSESSID","WP_PHPSESSID",g' \
   /usr/local/etc/php/conf.d/snuffleupagus.rules
 unset SNUFFLEUPAGUS_SECRET_KEY
 
