@@ -118,3 +118,138 @@ sp.disable_function.function("move_uploaded_file").param("to").value_r("\\.ht").
 sp.disable_function.function("ini_set").param("option").value_r("error_log").drop()
 sp.disable_function.function("ini_set").param("option").value_r("error_reporting").drop()
 sp.disable_function.function("ini_set").param("option").value_r("display_errors").drop()
+
+# CVE-2017-1001000 - https://blog.sucuri.net/2017/02/content-injection-vulnerability-wordpress-rest-api.html
+sp.disable_function.filename("/wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php").function("register_routes").var("_GET[id]").value_r("[^0-9]").drop();
+sp.disable_function.filename("/wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php").function("register_routes").var("_POST[id]").value_r("[^0-9]").drop();
+
+## INI protection - prevent unwanted runtime ini changes made by ini_set() or other functions or by .htaccess
+sp.ini_protection.enable();
+
+## simulation mode: only log violations
+#sp.ini_protection.simulation();
+
+## FOR PRODUCTION SYSTEMS: disable error messages and version numbers
+sp.ini.key("display_errors").set("0").ro();
+sp.ini.key("display_startup_errors").set("0").ro();
+sp.ini.key("expose_php").set("0").ro();
+## FOR DEVELOPMENT/TESTING: allow enabling error messages and version numbers
+#sp.ini.key("display_errors").rw();
+#sp.ini.key("display_startup_errors").rw();
+#sp.ini.key("expose_php").rw();
+
+## error logging options should not be set during runtime -> read-only.
+sp.ini.key("error_log").ro();
+sp.ini.key("error_reporting").ro();
+sp.ini.key("log_errors").ro();
+@condition PHP_VERSION_ID < 80000;
+sp.ini.key("log_errors_max_len").set("2048").ro();
+@end_condition;
+sp.ini.key("ignore_repeated_errors").ro();
+sp.ini.key("ignore_repeated_source").ro();
+sp.ini.key("syslog.filter").ro();
+
+## enforce color codes. prevents potential XSS
+sp.ini.key("highlight.comment").regexp("^#[0-9a-fA-F]{6}$");
+sp.ini.key("highlight.default").regexp("^#[0-9a-fA-F]{6}$");
+sp.ini.key("highlight.html").regexp("^#[0-9a-fA-F]{6}$");
+sp.ini.key("highlight.keyword").regexp("^#[0-9a-fA-F]{6}$");
+sp.ini.key("highlight.string").regexp("^#[0-9a-fA-F]{6}$");
+
+## prevent remote access via fopen/include
+sp.ini.key("allow_url_fopen").set("0").ro();
+sp.ini.key("allow_url_include").set("0").ro();
+
+## prevent code execution from auto-included files
+sp.ini.key("auto_append_file").ro();
+sp.ini.key("auto_prepend_file").ro();
+
+## make rarely used features read-only. you can always set the value in php.ini
+sp.ini.key("arg_separator.input").ro();
+sp.ini.key("arg_separator.output").ro();
+sp.ini.key("auto_detect_line_endings").ro();
+sp.ini.key("auto_globals_jit").ro();
+sp.ini.key("browscap").ro();
+sp.ini.key("default_charset").ro();
+sp.ini.key("register_argc_argv").ro();
+sp.ini.key("report_memleaks").ro();
+sp.ini.key("report_zend_debug").ro();
+sp.ini.key("request_order").ro();
+sp.ini.key("url_rewriter.hosts").ro();
+sp.ini.key("url_rewriter.tags").ro();
+sp.ini.key("variables_order").ro();
+sp.ini.key("from").ro();
+sp.ini.key("short_open_tag").ro();
+sp.ini.key("unserialize_callback_func").ro();
+sp.ini.key("zend.detect_unicode").ro();
+sp.ini.key("zend.enable_gc").ro();
+sp.ini.key("zend.exception_ignore_args").ro();
+sp.ini.key("zend.exception_string_param_max_len").ro();
+sp.ini.key("zend.multibyte").ro();
+sp.ini.key("zend.script_encoding").ro();
+
+## allow reasonable socket timeouts
+sp.ini.key("default_socket_timeout").min("1").max("300").rw();
+
+## disable dynamic loading of PHP extensions in an apache/mod_php environment as it is a security risk.
+sp.ini.key("enable_dl").set("0").ro();
+
+## links to manual pages in error pages should not be set during runtime.
+sp.ini.key("docref_ext").ro();
+sp.ini.key("docref_root").ro();
+sp.ini.key("html_errors").set("0").ro();
+
+## restrict limit settings to prevent Denial-of-Service
+sp.ini.key("max_execution_time").min("30").max("600").rw();
+sp.ini.key("max_file_uploads").min("0").max("25").rw();
+sp.ini.key("max_input_nesting_level").min("16").max("64").rw();
+sp.ini.key("max_input_time").set("-1").ro();
+sp.ini.key("max_input_vars").min("0").max("1024").rw();
+sp.ini.key("memory_limit").min("4M").max("256M").rw();
+sp.ini.key("post_max_size").max("256M").rw();
+sp.ini.key("upload_max_filesize").max("256M").rw();
+sp.ini.key("precision").max("14").rw();
+sp.ini.key("unserialize_max_depth").min("128").max("4096").rw();
+sp.ini.key("serialize_precision").ro();
+
+## open basedir is a security feature similar to chroot.
+## why should it be allowed to disable this feature during runtime?
+sp.ini.key("open_basedir").ro();
+
+## phar options
+@condition extension_loaded("phar");
+sp.ini.key("phar.cache_list").ro();
+sp.ini.key("phar.readonly").ro();
+sp.ini.key("phar.require_hash").ro();
+@end_condition;
+
+## allow setting the user agent
+sp.ini.key("user_agent").rw();
+
+## allow setting the xmlrpc fault code
+sp.ini.key("xmlrpc_error_number").rw();
+
+## these ini entries can only be set by php.ini anyway,
+## but better set them to read-only anyway, just to be sure.
+sp.ini.key("disable_classes").ro();
+sp.ini.key("disable_functions").ro();
+sp.ini.key("doc_root").ro();
+sp.ini.key("extension_dir").ro();
+sp.ini.key("file_uploads").ro();
+sp.ini.key("hard_timeout").ro();
+sp.ini.key("realpath_cache_size").ro();
+sp.ini.key("realpath_cache_ttl").ro();
+sp.ini.key("sendmail_path").ro();
+@condition extension_loaded("sqlite3");
+sp.ini.key("sqlite3.defensive").ro();
+sp.ini.key("sqlite3.extension_dir").ro();
+@end_condition;
+sp.ini.key("sys_temp_dir").ro();
+sp.ini.key("syslog.facility").ro();
+sp.ini.key("syslog.ident").ro();
+sp.ini.key("upload_tmp_dir").ro();
+sp.ini.key("user_dir").ro();
+sp.ini.key("user_ini.cache_ttl").ro();
+sp.ini.key("user_ini.filename").ro();
+sp.ini.key("zend.assertions").ro();
+sp.ini.key("zend.signal_check").set("0").ro();
