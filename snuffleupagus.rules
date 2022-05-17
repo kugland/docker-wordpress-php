@@ -127,7 +127,7 @@ sp.disable_function.filename("/wp-includes/rest-api/endpoints/class-wp-rest-post
 sp.ini_protection.enable();
 
 ## simulation mode: only log violations
-#sp.ini_protection.simulation();
+sp.ini_protection.simulation();
 
 ## FOR PRODUCTION SYSTEMS: disable error messages and version numbers
 sp.ini.key("display_errors").set("0").ro();
