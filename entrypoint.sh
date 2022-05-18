@@ -95,16 +95,12 @@ if [ "${1#-}" != "$1" ]; then set -- php-fpm "$@"; fi
 if [ "$1" = 'php-fpm' ]; then
   wp core verify-checksums || {
     echo "[!!!] Checksums of Wordpress core files are not valid. Please run 'wp core verify-checksums' manually."
-    exit 1 # Any change in the WordPress core files is a fatal error.
   }
   while ! nc -z mariadb 3306; do
     sleep 0.2
   done
   wp plugin verify-checksums --all || {
     echo "[!!!] Checksums of Wordpress plugins are not valid. Please run 'wp plugin verify-checksums --all' manually."
-    # Changes in the WordPress plugins are just warnings, cecause plugins
-    # that are not obtained from the WordPress.org repository cannot be
-    # verified.
   }
 fi
 exec "$@"
