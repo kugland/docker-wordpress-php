@@ -51,8 +51,8 @@ RUN sed -Ei /usr/local/etc/php-fpm.d/docker.conf \
     -e '/^error_log = /s,/proc/self/fd/2,/var/log/php-fpm/error.log,g'
 
 # Setup volumes
-RUN mkdir /var/log/php-fpm /var/cache/php-opcache
-VOLUME [ "/var/www/html", "/var/log/php-fpm", "/var/cache/php-opcache" ]
+RUN mkdir /var/log/php-fpm /var/cache/php-opcache /var/lib/php-sessions
+VOLUME [ "/var/www/html", "/var/log/php-fpm", "/var/cache/php-opcache", "/var/lib/php-sessions" ]
 
 # Add entrypoint script.
 COPY ./entrypoint.sh /entrypoint.sh

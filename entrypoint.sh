@@ -25,20 +25,20 @@ fi
 [ "$LOGGED_IN_SALT"   == "" ] && echo "[!!!] Please set LOGGED_IN_SALT in your .env file." && stop=1
 [ "$NONCE_SALT"       == "" ] && echo "[!!!] Please set NONCE_SALT in your .env file." && stop=1
 
-# Check directories.
-for d in wp-content wp-content/plugins wp-content/themes wp-content/uploads; do
-  if ! test -d "/var/www/html/$d"; then
-    echo "[!!!] Directory /var/www/html/wp-content/$d/ not found. Please mount it in your docker-compose.yml"
-    stop=1
-  fi
-done
-
 # Stop if anything is wrong.
 [ "$stop" == '1' ] && exit 1 || unset stop
 
 # Set the UID and GID for the daemon
 sed -Ei -e '/^www-data:/{s,:82:82:,:'${DAEMON_UID:-1000}:${DAEMON_GID:-1000}':,}' /etc/passwd*
 sed -Ei -e '/^www-data:/{s,:82:,:'${DAEMON_GID:-1000}':,g}' /etc/group*
+
+# Create temp directory for PHP uploads
+test -d /tmp/php-uploads || mkdir -p /tmp/php-uploads
+chown -R www-data:www-data /tmp/php-uploads
+
+# Create directory for PHP sessions
+test -d /var/lib/php-sessions || mkdir -p /var/lib/php-sessions
+chown -R www-data:www-data /var/lib/php-sessions
 
 # Do not allow a wp-config.php inside /var/www/html/
 if [ -f /var/www/html/wp-config.php ]; then
