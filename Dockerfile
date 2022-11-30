@@ -25,7 +25,7 @@ ENV WP_CLI_VERSION=v2.7.1
 # Add wp-cli.
 RUN { \
   set -eux ; \
-  curl -sSL https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar -o /usr/local/bin/wp-cli.phar \
+  curl -sSL https://github.com/wp-cli/wp-cli/releases/download/$WP_CLI_VERSION/wp-cli-"$(echo "$WP_CLI_VERSION" | sed 's,^v,,g')".phar -o /usr/local/bin/wp-cli.phar \
   && chmod +x /usr/local/bin/wp-cli.phar ; \
   sed -iEe '/^www-data:/{s,/sbin/nologin,/bin/sh,}' /etc/passwd* ; \
   apk add --no-cache sudo less ; \
