@@ -5,8 +5,12 @@
   ],
   "packageRules": [
     {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["php"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "php"
+      ],
       "versioning": "8\\.0\\.(?<patch>\\d+)-(?<compatibility>.+)$"
     }
   ],
