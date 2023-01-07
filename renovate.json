@@ -7,7 +7,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["php"],
-      "versioning": "8\\.0\\.(?<patch>\\d+)-(?<compatibility>.+)?$"
+      "versioning": "8\\.0\\.(?<patch>\\d+)-(?<compatibility>.+)$"
     }
   ],
   "regexManagers": [
