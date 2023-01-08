@@ -1,17 +1,13 @@
 {
   "extends": [
-    "config:base",
-    ":dependencyDashboardApproval"
+    "config:base"
   ],
   "packageRules": [
     {
-      "matchDatasources": [
-        "docker"
-      ],
       "matchPackageNames": [
         "php"
       ],
-      "versioning": "8\\.0\\.(?<patch>\\d+)-(?<compatibility>.+)$"
+      "allowedVersions": "<=8.0"
     }
   ],
   "regexManagers": [
