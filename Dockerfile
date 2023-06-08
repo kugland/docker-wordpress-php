@@ -20,7 +20,7 @@ RUN { \
 }
 
 # renovate: datasource=github-tags depName=wp-cli/wp-cli
-ENV WP_CLI_VERSION=v2.8.0
+ENV WP_CLI_VERSION=v2.8.1
 
 # Add wp-cli.
 RUN { \
