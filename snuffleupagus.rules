@@ -243,3 +243,6 @@ sp.ini.key("user_ini.cache_ttl").ro();
 sp.ini.key("user_ini.filename").ro();
 sp.ini.key("zend.assertions").ro();
 sp.ini.key("zend.signal_check").set("0").ro();
+
+# Allow an unsupported version of PHP (for now)
+sp.global.show_old_php_warning.disable();
