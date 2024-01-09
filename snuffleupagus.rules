@@ -4,9 +4,6 @@
 # and a lot of commented directives that you can enable if you want to
 # have a better protection.
 
-# Allow an unsupported version of PHP (for now)
-sp.global.show_old_php_warning.disable();
-
 # Harden the PRNG
 sp.harden_random.enable();
 
