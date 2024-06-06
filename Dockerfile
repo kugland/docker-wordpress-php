@@ -1,4 +1,4 @@
-FROM php:8.3.6-fpm-alpine
+FROM php:8.3.8-fpm-alpine
 
 LABEL org.opencontainers.image.title="wordpress-php" \
       org.opencontainers.image.description="php-fpm docker image for my WordPress stack" \
