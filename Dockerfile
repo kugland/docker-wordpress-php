@@ -15,6 +15,10 @@ RUN { \
   set -eux ; \
   curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/download/$DOCKER_PHP_EXTENSION_INSTALLER_VERSION/install-php-extensions -o /usr/local/bin/install-php-extensions ; \
   IPE_GD_WITHOUTAVIF=1 /bin/sh /usr/local/bin/install-php-extensions $PHP_EXTENSIONS ; \
+  # snuffleupagus >= 0.12.0 removed the show_old_php_warning config directive, but IPE still
+  # appends sp.global.show_old_php_warning.disable() to the rules file for any version >= 0.8.0,
+  # causing the build-time load check to fail. Remove the offending line from the IPE script.
+  sed -i '/show_old_php_warning/d' /usr/local/bin/install-php-extensions ; \
   IPE_DONT_ENABLE=1 /bin/sh /usr/local/bin/install-php-extensions snuffleupagus ; \
   rm /usr/local/bin/install-php-extensions ; \
   rm -rf /usr/src/* /usr/lib/*.a /usr/include/* ; \
