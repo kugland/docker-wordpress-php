@@ -17,8 +17,9 @@ RUN { \
   IPE_GD_WITHOUTAVIF=1 /bin/sh /usr/local/bin/install-php-extensions $PHP_EXTENSIONS ; \
   # snuffleupagus >= 0.12.0 removed the show_old_php_warning config directive, but IPE still
   # appends sp.global.show_old_php_warning.disable() to the rules file for any version >= 0.8.0,
-  # causing the build-time load check to fail. Remove the offending line from the IPE script.
-  sed -i '/show_old_php_warning/d' /usr/local/bin/install-php-extensions ; \
+  # causing the build-time load check to fail. Replace the offending line with a no-op ':' so
+  # the surrounding if/fi block stays valid (empty then-clauses are a syntax error in ash).
+  sed -i '/show_old_php_warning/s/.*/:/' /usr/local/bin/install-php-extensions ; \
   IPE_DONT_ENABLE=1 /bin/sh /usr/local/bin/install-php-extensions snuffleupagus ; \
   rm /usr/local/bin/install-php-extensions ; \
   rm -rf /usr/src/* /usr/lib/*.a /usr/include/* ; \
