@@ -2,6 +2,14 @@
   "extends": [
     "config:base"
   ],
+  "packageRules": [
+    {
+      "description": "Stay on PHP 8.5 until the extensions support newer PHP versions",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["php"],
+      "allowedVersions": "/^8\\.5\\./"
+    }
+  ],
   "regexManagers": [
     {
       "fileMatch": [
